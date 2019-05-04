@@ -1,0 +1,221 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <title>Scoped CSS Variables and JS</title>
+    <script src="tinycolor.js"></script>
+  </head>
+  <body>
+    <div class="wrapper">
+      <h2>Updating CSS Variables with <span class="hl">JS</span></h2>
+
+      <div class="controls">
+        <label for="spacing">Border:</label>
+        <input
+          id="spacing"
+          type="range"
+          name="spacing"
+          min="10"
+          max="200"
+          value="0"
+          data-sizing="px"
+        />
+
+        <label for="grayscale">Grayscale:</label>
+        <input
+          id="grayscale"
+          type="range"
+          name="grayscale"
+          min="0"
+          max="100"
+          value="0"
+          data-sizing="%"
+        />
+
+        <label for="base">Base Color</label>
+        <input id="base" type="color" name="base" value="#F5BF64" />
+      </div>
+    </div>
+    <div class="img-wrapper">
+      <img src="https://source.unsplash.com/7bwQXzbF6KE/800x500" />
+    </div>
+
+    <style>
+      :root {
+        --base: #f5bf64;
+        --complement: #acacac;
+        --font-color: #404040;
+        --grayscale: 0;
+        --spacing: 10px;
+      }
+
+      body {
+        background: var(--complement);
+        color: var(--font-color);
+        font-family: 'helvetica neue', sans-serif;
+        font-weight: 100;
+        font-size: 30px;
+        text-align: center;
+      }
+      .wrapper {
+        background: var(--base);
+        margin-bottom: 50px;
+        padding: 0.1rem 1rem 2rem 1rem;
+      }
+
+      .controls {
+        align-items: center;
+        display: flex;
+        justify-content: center;
+        padding: 1rem;
+      }
+
+      label {
+        margin-right: 1rem;
+      }
+
+      .img-wrapper {
+        background: var(--base);
+        height: 500px;
+        margin: 0 auto;
+        padding: var(--spacing);
+        width: 800px;
+      }
+      img {
+        -webkit-box-shadow: inset 0 0 0.5rem rgba(0, 0, 0, 0.1),
+          0 0 1rem rgba(0, 0, 0, 0.1);
+        -moz-box-shadow: inset 0 0 0.5rem rgba(0, 0, 0, 0.1),
+          0 0 1rem rgba(0, 0, 0, 0.1);
+        box-shadow: inset 0 0 0.5rem rgba(0, 0, 0, 0.1),
+          0 0 1rem rgba(0, 0, 0, 0.1);
+        filter: grayscale(var(--grayscale));
+      }
+
+      .hl {
+        color: var(--complement);
+        font-size: 60px;
+        -webkit-text-stroke: 1px var(--font-color);
+      }
+
+      input[type='color'] {
+        background: rgba(255, 255, 255, 0.5);
+        border: 5px solid var(--font-color);
+        -webkit-box-shadow: inset 0 0 0.5rem rgba(0, 0, 0, 0.1),
+          0 0 1rem rgba(0, 0, 0, 0.1);
+        -moz-box-shadow: inset 0 0 0.5rem rgba(0, 0, 0, 0.1),
+          0 0 1rem rgba(0, 0, 0, 0.1);
+        box-shadow: inset 0 0 0.5rem rgba(0, 0, 0, 0.1),
+          0 0 1rem rgba(0, 0, 0, 0.1);
+        padding: 1rem;
+        margin: 0 0 10px 0;
+      }
+
+      input[type='range'] {
+        -webkit-appearance: none;
+        width: 10rem;
+      }
+      input[type='range']:focus {
+        outline: none;
+      }
+      input[type='range']::-webkit-slider-runnable-track {
+        width: 10rem;
+        height: 0.5rem;
+        cursor: pointer;
+        background: var(--font-color);
+        border-radius: 1.3px;
+      }
+      input[type='range']::-webkit-slider-thumb {
+        height: 2rem;
+        width: 2rem;
+        border-radius: 50%;
+        background: var(--font-color);
+        -webkit-appearance: none;
+        margin-top: -0.8rem;
+      }
+      input[type='range']:focus::-webkit-slider-runnable-track {
+        background: var(--font-color);
+      }
+      input[type='range']::-moz-range-track {
+        width: 10rem;
+        height: 0.5rem;
+        background: var(--font-color);
+        border-radius: 1.3px;
+      }
+      input[type='range']::-moz-range-thumb {
+        height: 2rem;
+        width: 2rem;
+        border-radius: 50%;
+        background: var(--font-color);
+      }
+      input[type='range']::-ms-track {
+        width: 10rem;
+        height: 0.5rem;
+        background: transparent;
+        border-color: transparent;
+        border-width: 16px 0;
+        color: transparent;
+      }
+      input[type='range']::-ms-fill-lower {
+        background: var(--font-color);
+      }
+      input[type='range']::-ms-fill-upper {
+        background: var(--font-color);
+      }
+      input[type='range']::-ms-thumb {
+        height: 2rem;
+        width: 2rem;
+        border-radius: 50%;
+        background: var(--font-color);
+        cursor: pointer;
+      }
+      input[type='range']:focus::-ms-fill-lower {
+        background: var(--font-color);
+      }
+      input[type='range']:focus::-ms-fill-upper {
+        background: var(--font-color);
+      }
+
+      input {
+        cursor: pointer;
+        margin-right: 2rem;
+        width: 100px;
+      }
+    </style>
+
+    <script>
+      function handleUpdate() {
+        const suffix = this.dataset.sizing || '';
+        const id = this.id;
+        document.documentElement.style.setProperty(
+          `--${id}`,
+          this.value + suffix
+        );
+
+        if (id === 'base') {
+          const contrastColor = tinycolor(this.value).isLight()
+            ? tinycolor(this.value)
+                .splitcomplement()[2]
+                .desaturate(100)
+            : tinycolor(this.value)
+                .splitcomplement()[2]
+                .desaturate(100)
+                .lighten(60);
+          const fontColor = tinycolor(this.value).isLight()
+            ? '#404040'
+            : '#ffffff';
+          document.documentElement.style.setProperty(
+            `--complement`,
+            contrastColor
+          );
+          document.documentElement.style.setProperty(`--font-color`, fontColor);
+        }
+      }
+      const inputs = document.querySelectorAll('.controls input');
+
+      inputs.forEach(input => {
+        input.addEventListener('change', handleUpdate);
+        input.addEventListener('mousemove', handleUpdate);
+      });
+    </script>
+  </body>
+</html>
