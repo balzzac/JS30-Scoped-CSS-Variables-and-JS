@@ -1,4 +1,4 @@
-# Javascript 30 Challenge. Day 3 Scoped CSS Variables and JS
+# JavaScript 30 Challenge. Day 3 Scoped CSS Variables and JS
 
 > Based on https://javascript30.com/
 
